@@ -1,0 +1,21 @@
+# Native Python deploy on Render (free). Dashboard: New > Blueprint > pick this repo.
+services:
+  - type: web
+    name: wastedetect-ai
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: bash build.sh
+    startCommand: >-
+      streamlit run app.py --server.port=$PORT --server.address=0.0.0.0
+      --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false
+      --server.fileWatcherType=none --server.maxUploadSize=10 --browser.gatherUsageStats=false
+    healthCheckPath: /_stcore/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: MALLOC_ARENA_MAX
+        value: "2"
+      - key: OMP_NUM_THREADS
+        value: "1"
